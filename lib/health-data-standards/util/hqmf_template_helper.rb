@@ -9,14 +9,15 @@ module HealthDataStandards
 
       def self.template_id_map(version)
         case version
-        when "r1"
-          path = '../hqmf_template_oid_map.json'
-        when "r2"
-          path = '../hqmfr2_template_oid_map.json'
+          when "r1"
+            path = '../hqmf_template_oid_map.json'
+          when "r2"
+            path = '../hqmfr2_template_oid_map.json'
         end
-        if @id_map.blank?
+        if @id_map.blank? || version != @id_map_version
           template_id_file = File.expand_path(path, __FILE__)
           @id_map = JSON.parse(File.read(template_id_file))
+          @id_map_version = version
         end
         @id_map
       end
