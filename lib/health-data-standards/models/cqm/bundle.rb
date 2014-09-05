@@ -40,7 +40,7 @@ module HealthDataStandards
       def delete(params = {})
         # self.measures.destroy
         # self.records.destroy
-        self.value_sets.destroy
+        # self.value_sets.destroy
         super(params = {})
       end
      end
