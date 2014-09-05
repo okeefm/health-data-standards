@@ -37,7 +37,7 @@ module HealthDataStandards
         HealthDataStandards::SVS::ValueSet.in(bundle_id: self.id)
       end
 
-      def delete
+      def delete(params = {})
         # self.measures.destroy
         # self.records.destroy
         self.value_sets.destroy
