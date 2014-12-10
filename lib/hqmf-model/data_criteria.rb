@@ -36,7 +36,9 @@ module HQMF
              'INCISION_DATETIME' => {title:'Incision Date/Time', coded_entry_method: :incision_time, code: '34896006', code_system:'2.16.840.1.113883.6.96', template_id: '2.16.840.1.113883.3.560.1.1007.1', field_type: :timestamp},
              'REMOVAL_DATETIME' => {title:'Removal Date/Time', coded_entry_method: :removal_time, code: '118292001', code_system:'2.16.840.1.113883.6.96', template_id: '2.16.840.1.113883.3.560.1.1032.1', field_type: :timestamp},
              'TRANSFER_TO' => {title:'Transfer To', coded_entry_method: :transfer_to, code: 'TRANSFER_TO', template_id: '2.16.840.1.113883.3.560.1.72', field_type: :value},
+             'TRANSFER_TO_DATETIME' => {title:'Transfer To Date/Time', coded_entry_method: :transfer_to_time, code: 'DST_TIME', template_id: '2.16.840.1.113883.3.560.1.72', field_type: :nested_timestamp},
              'TRANSFER_FROM' => {title:'Transfer From', coded_entry_method: :transfer_from, code: 'TRANSFER_FROM', template_id: '2.16.840.1.113883.3.560.1.71', field_type: :value},
+             'TRANSFER_FROM_DATETIME' => {title:'Transfer From Date/Time', coded_entry_method: :transfer_from_time, code: 'ORG_TIME', template_id: '2.16.840.1.113883.3.560.1.71', field_type: :nested_timestamp}
              }
 
     VALUE_FIELDS = {'SEV'      => 'SEVERITY',
@@ -294,16 +296,16 @@ module HQMF
       settings
     end
 
-    def self.definition_for_template_id(template_id)
-      get_template_id_map()[template_id]
+    def self.definition_for_template_id(template_id, version='r1')
+      get_template_id_map(version)[template_id]
     end
 
     def self.template_id_for_definition(definition, status, negation, version="r1")
       get_template_id_map(version).key({'definition' => definition, 'status' => status || '', 'negation' => negation})
     end
 
-    def self.title_for_template_id(template_id)
-      value = get_template_id_map()[template_id]
+    def self.title_for_template_id(template_id, version='r1')
+      value = get_template_id_map(version)[template_id]
       if value
         settings = self.get_settings_for_definition(value['definition'], value['status'])
         if settings
@@ -349,7 +351,7 @@ module HQMF
       case type
         when 'TS', 'PQ'
           value = HQMF::Value.from_json(json)
-        when 'IVL_PQ'
+        when 'IVL_PQ', 'IVL_TS'
           value = HQMF::Range.from_json(json)
         when 'CD'
           value = HQMF::Coded.from_json(json)
